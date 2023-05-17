@@ -10,15 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 063ce0bfb02cf1f48adc9290764e2452, type: 3}
-  m_Name: EmptyMove
+  m_Name: Use Item
   m_EditorClassIdentifier: 
-  StringName: 
-  StringDescription: 
-  MoveProperties: 
-  FloatHealth: 0
-  FloatAttack: 0
-  FloatDefence: 0
-  FloatSpeed: 0
-  FloatEvasion: 0
-  FloatAccuracy: 0
-  FloatPowerPoint: 0
+  m_Description: 
+  m_timeline: {fileID: 0}
+  m_MoveProperties: 
+  m_Speed: 0
+  m_Accuracy: 0
+  m_PowerPoint: 0
+  m_instantiatedPrefabBindings: []

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-[CreateAssetMenu(fileName = "Move", menuName = "Creatures/Create New Move")]
+[CreateAssetMenu(fileName = "Move", menuName = "Turn System/Create New Move")]
 public class Move : ScriptableObject
 {
     [SerializeField, TextArea] string m_Description; //The description of the move
@@ -14,15 +14,12 @@ public class Move : ScriptableObject
     [SerializeField] string m_MoveProperties; //Move special affects (Optional)
     [SerializeField] float m_Speed; //Impacts what order the units attack in
     [SerializeField] float m_Accuracy; //The chance on whether the move would hit
-    [SerializeField] float m_PowerPoint; //How many times the move can be used
 
     public TimelineAsset Timeline { get { return m_timeline; } }
-    public GameObject[] m_instantiatedPrefabBindings;
     public string Description { get { return m_Description; } }
     public string Properties { get { return m_MoveProperties; } }
     public float Speed { get { return m_Speed; } }
     public float Accuracy { get { return m_Accuracy; } }
-    public float PowerPoint { get { return m_PowerPoint; } }
 
     public void SetUpPlayableDirector(PlayableDirector _director, UnitStats _executorUnit, UnitStats _targetUnit)
     {
@@ -34,16 +31,23 @@ public class Move : ScriptableObject
             var clips = (_playableBinding.sourceObject as AnimationTrack).GetClips();
             foreach (var clip in clips)
             {
+                
+
                 //Check whether the selected clip is an AnimationPlayableAsset
                 AnimationPlayableAsset animationAsset = clip.asset as AnimationPlayableAsset;
                 if (animationAsset == null) continue;
 
+                //
+                animationAsset.clip = null;
+
                 //Check whether the animation clip can be replaced
-                UnitStats.UnitAnimation unitAnimation = Array.Find(_unitStats.m_unitAnimations, i => i.name == clip.displayName);
-                if (unitAnimation.name == "") continue;
+                UnitStats.UnitAnimation unitAnimation = Array.Find(_unitStats.m_unitAnimations, i => i.m_name == clip.displayName);
+                if (unitAnimation.m_name == "") continue;
 
                 //Replace the animation
-                animationAsset.clip = unitAnimation.clip;
+                animationAsset.clip = unitAnimation.m_clip;
+
+                //GetChildTracks
             }
         }
 
@@ -54,7 +58,7 @@ public class Move : ScriptableObject
             case "Executor Unit Stats": _director.SetGenericBinding(playableAssetOutput.sourceObject, _executorUnit); break;
             case "Target Unit Stats": _director.SetGenericBinding(playableAssetOutput.sourceObject, _targetUnit); break;
             case "Executor Animator": AssignAnimationBinding(_executorUnit, playableAssetOutput); break;
-            case "Target Animator": AssignAnimationBinding(_executorUnit, playableAssetOutput); break;
+            case "Target Animator": AssignAnimationBinding(_targetUnit, playableAssetOutput); break;
         }
     }
 
@@ -87,8 +91,4 @@ public class Move : ScriptableObject
         //Bind the object
         playableBinding.sourceObject = _objectToBind;
     }
-
-//#region Move Properties
-//    static public void SpecialMove() { }
-//#endregion
 }

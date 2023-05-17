@@ -203,15 +203,15 @@ public class TurnSystem : MonoBehaviour
 
             //Update fight UI
             foreach (Transform child in m_fightUI.m_moveLayoutGroup.transform) Destroy(child.gameObject);
-            for (int i = 0; i < m_players[m_playerSelectIndex].m_UnitActionMoves.Count; i++)
+            for (int i = 0; i < m_players[m_playerSelectIndex].m_unitMoves.Count; i++)
             {
                 Button moveButton = Instantiate(m_fightUI.m_moveButtonPrefab, m_fightUI.m_moveLayoutGroup.transform);
-                Move move = m_players[m_playerSelectIndex].m_UnitActionMoves[i];
+                Move move = m_players[m_playerSelectIndex].m_unitMoves[i];
 
                 int moveIndex = i;
                 moveButton.onClick.AddListener(delegate
                 {
-                    m_players[m_playerSelectIndex].m_MoveSelected = moveIndex;
+                    m_players[m_playerSelectIndex].SetMoveSelected(moveIndex);
                     StartCoroutine(m_coroutine);
                 });
                 moveButton.GetComponentInChildren<TMP_Text>().text = move.name;
@@ -265,7 +265,7 @@ public class TurnSystem : MonoBehaviour
         if (m_machine.CurrentStateName != BattleState.SelectTarget.ToString()) return;
         
         //Set the target unit for the player
-        m_players[m_playerSelectIndex].m_TargetUnit = _selectedTarget;
+        m_players[m_playerSelectIndex].m_targetUnit = _selectedTarget;
         m_playerSelectIndex++;
 
         //If all players have selected a moves and a target, then move to the execute moves state
@@ -277,7 +277,7 @@ public class TurnSystem : MonoBehaviour
     public void SelectTargetBackButtonClick()
     {
         //Dont execute if not in the appropriate state
-        if (m_machine.CurrentStateName == BattleState.SelectTarget.ToString()) return;
+        if (m_machine.CurrentStateName != BattleState.SelectTarget.ToString()) return;
 
         //Reselect move of the player unit
         m_machine.CurrentState = m_machine.m_states[BattleState.SelectMove.ToString()];
@@ -290,8 +290,8 @@ public class TurnSystem : MonoBehaviour
         //For Every enemy select a move
         foreach (UnitStats enemy in m_enemies)
         {
-            enemy.m_TargetUnit = m_players[UnityEngine.Random.Range(0, m_players.Count-1)];
-            enemy.m_MoveSelected = UnityEngine.Random.Range(0, enemy.m_UnitActionMoves.Count-1);
+            enemy.m_targetUnit = m_players[UnityEngine.Random.Range(0, m_players.Count-1)];
+            enemy.SetMoveSelected(UnityEngine.Random.Range(0, enemy.m_unitMoves.Count-1));
         }
 
         //Order Units in order of speed
@@ -305,7 +305,7 @@ public class TurnSystem : MonoBehaviour
             m_unitTurnOrder,
             delegate (UnitStats _left, UnitStats _right)
             {
-                float GetUnitSpeed(ref UnitStats _unit) { return _unit.Speed + _unit.MoveSelected.Speed; }
+                float GetUnitSpeed(ref UnitStats _unit) { return _unit.Speed + _unit.m_moveSelected.Speed; }
                 return (int)((GetUnitSpeed(ref _right) - GetUnitSpeed(ref _left)) * 100);
             }
         );
@@ -320,18 +320,18 @@ public class TurnSystem : MonoBehaviour
             for (m_unitTurnIndex = 0; m_unitTurnIndex < m_unitTurnOrder.Length; m_unitTurnIndex++)
             {
                 UnitStats executorUnit = m_unitTurnOrder[m_unitTurnIndex];
-                UnitStats targetUnit = executorUnit.m_TargetUnit;
+                UnitStats targetUnit = executorUnit.m_targetUnit;
 
                 //Skip Player Units that have no health
                 if (executorUnit.Health <= 0.0f) continue;
 
                 //Play move animations of units
-                m_director.playableAsset = executorUnit.MoveSelected.Timeline;
-                executorUnit.MoveSelected.SetUpPlayableDirector(m_director, executorUnit, targetUnit);
+                m_director.playableAsset = executorUnit.m_moveSelected.Timeline;
+                executorUnit.m_moveSelected.SetUpPlayableDirector(m_director, executorUnit, targetUnit);
                 m_director.Play();
 
                 //Wait for the animation to finish
-                yield return new WaitForSeconds((float)executorUnit.MoveSelected.Timeline.duration);
+                yield return new WaitForSeconds((float)executorUnit.m_moveSelected.Timeline.duration);
 
                 //Ensure the animation has finished
                 m_director.Stop();

@@ -24,17 +24,17 @@ public class UnitStats : MonoBehaviour
     [SerializeField] float m_maxAccuracy; [ReadOnly, SerializeField] float m_accuracy;
 
     //Moves List
-    public List<Move> m_UnitActionMoves;
+    public List<Move> m_unitMoves;
 
     //Battle varribles
-    public int m_MoveSelected;
-    public UnitStats m_TargetUnit;
+    public Move m_moveSelected;
+    public UnitStats m_targetUnit;
 
     //Animations
     [System.Serializable] public struct UnitAnimation
     {
-        public string name;
-        public AnimationClip clip;
+        public string m_name;
+        public AnimationClip m_clip;
     }
     public UnitAnimation[] m_unitAnimations;
 
@@ -133,5 +133,8 @@ public class UnitStats : MonoBehaviour
         set { SetFloatStat(value, ref m_accuracy, ref m_maxAccuracy); }
     }
 
-    public Move MoveSelected { get { return m_UnitActionMoves[m_MoveSelected]; } }
+    public void SetMoveSelected(int _moveIndex)
+    {
+        m_moveSelected = m_unitMoves[_moveIndex];
+    }
 }
