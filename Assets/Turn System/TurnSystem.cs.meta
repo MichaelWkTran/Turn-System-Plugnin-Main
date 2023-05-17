@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 365d7d1cc888216418a7e5aa3170e725
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_TabsAndPages: {instanceID: 0}
+  - m_CurrentInvPage: {instanceID: 0}
+  - m_DefaultInvPage: {instanceID: 0}
+  - m_GridLayoutTabs: {instanceID: 0}
+  - m_ItemTabButton: {instanceID: 0}
+  - m_TabPageIcon: {instanceID: 0}
+  - m_BaseRectTransform: {instanceID: 0}
+  - m_HealthBar: {fileID: 2540095473366543156, guid: bd61d702090af944c89dccbbf4014526, type: 3}
+  - m_EmptyMove: {fileID: 11400000, guid: fc8522e3786e10b4b8e2d22d6007b0d6, type: 2}
+  - m_InvPage: {fileID: 8608379610965123141, guid: 3a4b58919a97ffc47832659fada3e9c7, type: 3}
+  - m_InvSlot: {fileID: 6501552437424135943, guid: d37a441402b01c0479b3636e7f75fa75, type: 3}
+  - m_InventorySystem: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
