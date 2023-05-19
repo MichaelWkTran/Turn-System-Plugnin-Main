@@ -36,6 +36,10 @@ public class TurnSystem : MonoBehaviour
         public Button m_moveButtonPrefab;
         public VerticalLayoutGroup m_moveLayoutGroup;
     }
+    [Serializable] protected struct ItemUI
+    {
+        public RectTransform m_pannel;
+    }
     [Serializable] protected struct SelectTargetUI
     {
         public RectTransform m_pannel;
@@ -77,13 +81,13 @@ public class TurnSystem : MonoBehaviour
 
     //Other Variables
     PlayableDirector m_director;
-    IEnumerator m_coroutine = null;
-
+    
     //BattleUI
     [Header("UI")]
     [SerializeField] RectTransform m_battleUI;
     [SerializeField] CommandUI m_commandUI;
     [SerializeField] FightUI m_fightUI;
+    [SerializeField] ItemUI m_itemUI;
     [SerializeField] SelectTargetUI m_selectTargetUI;
 
 #if UNITY_EDITOR
@@ -182,58 +186,48 @@ public class TurnSystem : MonoBehaviour
         //Enables/Disables UI
         m_battleUI.gameObject.SetActive(true);
         m_commandUI.m_pannel.gameObject.SetActive(true);
-        m_fightUI.m_pannel.gameObject.SetActive(false);
         m_commandUI.m_backButton.gameObject.SetActive(m_playerSelectIndex > 0);
 
-        IEnumerator SelectMovesCoroutine()
+        //Skip Player Units that have no health
+        for (; m_playerSelectIndex < m_players.Count; m_playerSelectIndex++)
         {
-            //Skip Player Units that have no health
-            for (; m_playerSelectIndex < m_players.Count; m_playerSelectIndex++)
-            {
-                if (m_players[m_playerSelectIndex].Health >= 0.0f) break;
+            if (m_players[m_playerSelectIndex].Health >= 0.0f) break;
 
-                //Lose the game if all players have no health
-                if (m_playerSelectIndex + 1 >= m_players.Count)
-                {
-                    Lost();
-                    m_coroutine = null;
-                    yield break;
-                }
-            }
-
-            //Update fight UI
-            foreach (Transform child in m_fightUI.m_moveLayoutGroup.transform) Destroy(child.gameObject);
-            for (int i = 0; i < m_players[m_playerSelectIndex].m_unitMoves.Count; i++)
-            {
-                Button moveButton = Instantiate(m_fightUI.m_moveButtonPrefab, m_fightUI.m_moveLayoutGroup.transform);
-                Move move = m_players[m_playerSelectIndex].m_unitMoves[i];
-
-                int moveIndex = i;
-                moveButton.onClick.AddListener(delegate
-                {
-                    m_players[m_playerSelectIndex].SetMoveSelected(moveIndex);
-                    StartCoroutine(m_coroutine);
-                });
-                moveButton.GetComponentInChildren<TMP_Text>().text = move.name;
-            }
-
-            //Pause Coroutine for the player to select a move
-            StopCoroutine(m_coroutine);
-            yield return null;
-
-            //Transition to select target state
-            m_machine.CurrentState = m_machine.m_states[BattleState.SelectTarget.ToString()];
+            //Lose the game if all players have no health
+            if (m_playerSelectIndex + 1 >= m_players.Count) { Lost(); return; }
         }
 
-        //Start Coroutine
-        m_coroutine = SelectMovesCoroutine();
-        StartCoroutine(m_coroutine);
+        //Update fight UI
+        foreach (Transform child in m_fightUI.m_moveLayoutGroup.transform) Destroy(child.gameObject);
+        for (int i = 0; i < m_players[m_playerSelectIndex].m_unitMoves.Count; i++)
+        {
+            Button moveButton = Instantiate(m_fightUI.m_moveButtonPrefab, m_fightUI.m_moveLayoutGroup.transform);
+            Move move = m_players[m_playerSelectIndex].m_unitMoves[i];
+
+            int moveIndex = i;
+            moveButton.onClick.AddListener(delegate { SelectMove(m_players[m_playerSelectIndex].m_unitMoves[moveIndex]); });
+            moveButton.GetComponentInChildren<TMP_Text>().text = move.name;
+        }
     }
 
     void SelectMoveExit()
     {
-        //End coroutine and set stored coroutine to null when it has finished
-        m_coroutine = null;
+        //Close Select Moves UI
+        m_commandUI.m_pannel.gameObject.SetActive(false);
+        m_fightUI.m_pannel.gameObject.SetActive(false);
+        m_itemUI.m_pannel.gameObject.SetActive(false);
+    }
+
+    public void SelectMove(Move _move)
+    {
+        //Dont select move if not in the appropriate state
+        if (m_machine.CurrentStateName != BattleState.SelectMove.ToString()) return;
+
+        //Set selected move
+        m_players[m_playerSelectIndex].m_moveSelected = _move;
+
+        //Move to the select target state
+        m_machine.CurrentState = m_machine.m_states[BattleState.SelectTarget.ToString()];
     }
 
     public void CommandBackButtonClick()

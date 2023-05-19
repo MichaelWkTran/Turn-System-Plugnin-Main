@@ -1,54 +1,57 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-[CreateAssetMenu(fileName = "Move", menuName = "Turn System/Create New Move")]
+[CreateAssetMenu(fileName = "Untitled Move", menuName = "Turn System/Create New Move")]
 public class Move : ScriptableObject
 {
-    [SerializeField, TextArea] string m_Description; //The description of the move
+    [SerializeField, TextArea] string m_description; //The description of the move
     [SerializeField] TimelineAsset m_timeline; //Stores move animation and how it impacts the units (this includes damaging the units)
-    [SerializeField] string m_MoveProperties; //Move special affects (Optional)
-    [SerializeField] float m_Speed; //Impacts what order the units attack in
-    [SerializeField] float m_Accuracy; //The chance on whether the move would hit
+    [SerializeField] float m_speed; //Impacts what order the units attack in
+    [SerializeField] float m_accuracy; //The chance on whether the move would hit
 
     public TimelineAsset Timeline { get { return m_timeline; } }
-    public string Description { get { return m_Description; } }
-    public string Properties { get { return m_MoveProperties; } }
-    public float Speed { get { return m_Speed; } }
-    public float Accuracy { get { return m_Accuracy; } }
+    public string Description { get { return m_description; } }
+    public float Speed { get { return m_speed; } }
+    public float Accuracy { get { return m_accuracy; } }
 
     public void SetUpPlayableDirector(PlayableDirector _director, UnitStats _executorUnit, UnitStats _targetUnit)
     {
         void AssignAnimationBinding(UnitStats _unitStats, PlayableBinding _playableBinding)
         {
+            void ReplaceTrackClips(AnimationTrack _track)
+            {
+                var clips = _track.GetClips();
+                foreach (var clip in clips)
+                {
+                    //Check whether the selected clip is an AnimationPlayableAsset
+                    AnimationPlayableAsset animationAsset = clip.asset as AnimationPlayableAsset;
+                    if (animationAsset == null) continue;
+
+                    //Clear the track clip
+                    animationAsset.clip = null;
+
+                    //Check whether the animation clip can be replaced
+                    UnitStats.UnitAnimation unitAnimation = Array.Find(_unitStats.m_unitAnimations, i => i.m_name == clip.displayName);
+                    if (unitAnimation.m_name == "") continue;
+
+                    //Replace the animation
+                    animationAsset.clip = unitAnimation.m_clip;
+                }
+            }
+
+            //Set the unit animator to director bindings
             Animator animator = _unitStats.GetComponent<Animator>();
             _director.SetGenericBinding(_playableBinding.sourceObject, animator);
 
-            var clips = (_playableBinding.sourceObject as AnimationTrack).GetClips();
-            foreach (var clip in clips)
-            {
-                
+            //Get the animation track and replace its animation clips
+            var animationTrack = _playableBinding.sourceObject as AnimationTrack;
+            ReplaceTrackClips(animationTrack);
 
-                //Check whether the selected clip is an AnimationPlayableAsset
-                AnimationPlayableAsset animationAsset = clip.asset as AnimationPlayableAsset;
-                if (animationAsset == null) continue;
-
-                //
-                animationAsset.clip = null;
-
-                //Check whether the animation clip can be replaced
-                UnitStats.UnitAnimation unitAnimation = Array.Find(_unitStats.m_unitAnimations, i => i.m_name == clip.displayName);
-                if (unitAnimation.m_name == "") continue;
-
-                //Replace the animation
-                animationAsset.clip = unitAnimation.m_clip;
-
-                //GetChildTracks
-            }
+            //Get the animation override tracks and replace its animation clips
+            var childTracks = animationTrack.GetChildTracks();
+            foreach (var overrideTrack in childTracks) ReplaceTrackClips(overrideTrack as AnimationTrack);
         }
 
         //Loop through all bindings in the director

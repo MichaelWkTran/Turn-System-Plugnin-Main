@@ -12,15 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57d68b9d81a6aa146a22a79da66ff663, type: 3}
   m_Name: Potion
   m_EditorClassIdentifier: 
-  m_INVName: 
-  m_Description: 
-  m_Icon: {fileID: 21300000, guid: 11179e80cbc1c1541863b9acae97e4bc, type: 3}
-  m_Capacity: 10
-  m_Properties: 
-  m_Health: 10
-  m_Attack: 0
-  m_Defence: 0
-  m_Speed: 0
-  m_Evasion: 0
-  m_Accuracy: 0
-  m_Time: 0
+  m_description: 
+  m_timeline: {fileID: 11400000, guid: f90fd04ba1caa4c48bf9d3363a5fec66, type: 2}
+  m_speed: 0
+  m_accuracy: 0
+  m_icon: {fileID: 0}
+  m_capacity: 0
