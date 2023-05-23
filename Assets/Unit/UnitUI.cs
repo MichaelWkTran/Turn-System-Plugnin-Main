@@ -4,13 +4,13 @@ using System;
 
 public class UnitUI : MonoBehaviour
 {
-    public UnitStats m_unitStats;
+    public Unit m_Unit;
     public Slider m_healthSlider;
 
-    public void Init(UnitStats _unitStats)
+    public void Init(Unit _Unit)
     {
-        if (_unitStats == null || m_unitStats == null) return;
-        m_unitStats = _unitStats;
+        if (_Unit == null || m_Unit == null) return;
+        m_Unit = _Unit;
     }
 
     void UpdateSlider(Slider _slider, float _value, float _maxValue)
@@ -21,14 +21,14 @@ public class UnitUI : MonoBehaviour
 
     public void UpdateUI()
     {
-        if (m_unitStats == null) { Destroy(gameObject); return; }
+        if (m_Unit == null) { Destroy(gameObject); return; }
 
-        UpdateSlider(m_healthSlider, m_unitStats.Health, m_unitStats.MaxHealth);
+        UpdateSlider(m_healthSlider, m_Unit.Health, m_Unit.MaxHealth);
     }
 
-    static public UnitUI FindUIWithUnitStats(UnitStats _unitStats)
+    static public UnitUI FindUIWithUnit(Unit _Unit)
     {
         UnitUI[] unitUIInWorld = FindObjectsOfType<UnitUI>(true);
-        return Array.Find(unitUIInWorld, i => i.m_unitStats == _unitStats);
+        return Array.Find(unitUIInWorld, i => i.m_Unit == _Unit);
     }
 }

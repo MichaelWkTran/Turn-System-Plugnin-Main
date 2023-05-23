@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class UnitStats : MonoBehaviour
+public class Unit : MonoBehaviour
 {
     public enum UnitType
     {
@@ -14,21 +15,22 @@ public class UnitStats : MonoBehaviour
     public string m_unitName;
     public UnitType m_unitType;
     public float m_experience;
+    public UnityEvent OnUpdate;
 
     //Health
     [SerializeField] float m_maxHealth;   [ReadOnly, SerializeField] float m_health;
-    [SerializeField] float m_maxAttack;   [ReadOnly, SerializeField] float m_attack;
-    [SerializeField] float m_maxDefence;  [ReadOnly, SerializeField] float m_defence;
-    [SerializeField] float m_maxSpeed;    [ReadOnly, SerializeField] float m_speed;
-    [SerializeField] float m_maxEvasion;  [ReadOnly, SerializeField] float m_evasion;
-    [SerializeField] float m_maxAccuracy; [ReadOnly, SerializeField] float m_accuracy;
+    [SerializeField] float m_minAttack; [SerializeField] float m_maxAttack;   [ReadOnly, SerializeField] float m_attack;
+    [SerializeField] float m_minDefence; [SerializeField] float m_maxDefence;  [ReadOnly, SerializeField] float m_defence;
+    [SerializeField] float m_minSpeed; [SerializeField] float m_maxSpeed;    [ReadOnly, SerializeField] float m_speed;
+    [SerializeField] float m_minEvasion; [SerializeField] float m_maxEvasion;  [ReadOnly, SerializeField] float m_evasion;
+    [SerializeField] float m_minAccuracy; [SerializeField] float m_maxAccuracy; [ReadOnly, SerializeField] float m_accuracy;
 
     //Moves List
     public List<Move> m_unitMoves;
 
     //Battle varribles
     public Move m_moveSelected;
-    public UnitStats m_targetUnit;
+    public Unit m_targetUnit;
 
     //Animations
     [System.Serializable] public struct UnitAnimation
@@ -49,15 +51,36 @@ public class UnitStats : MonoBehaviour
         m_accuracy = m_maxAccuracy;
     }
 
+    void Start()
+    {
+        TurnSystem turnSystem = FindObjectOfType<TurnSystem>();
+        turnSystem.AddUnit(this);
+    }
+
+    void OnDestroy()
+    {
+        TurnSystem turnSystem = FindObjectOfType<TurnSystem>();
+        if (turnSystem != null)
+        {
+            //Remove the unit from turnsystem list if destroyed
+            switch(m_unitType)
+            {
+                case UnitType.Player: turnSystem.m_players.Remove(this); break;
+                case UnitType.Enemy: turnSystem.m_enemies.Remove(this); break;
+                default: turnSystem.m_neutral.Remove(this); break;
+            }
+        }
+    }
+
     void SetMaxFloatStat(float _value, ref float _currentVariable, ref float _maxVariable)
     {
         _maxVariable = _value;
         _currentVariable = Mathf.Clamp(_currentVariable, 0.0f, _maxVariable);
     }
 
-    void SetFloatStat(float _value, ref float _currentVariable, ref float _maxVariable)
+    void SetFloatStat(float _value, ref float _currentVariable, float _maxVariable, float _minVariable = 0.0f)
     {
-        _currentVariable = Mathf.Clamp(_value, 0.0f, _maxVariable);
+        _currentVariable = Mathf.Clamp(_value, _minVariable, _maxVariable);
     }
 
     //Get Set Methods
@@ -70,7 +93,7 @@ public class UnitStats : MonoBehaviour
     public float Health
     {
         get { return m_health; }
-        set { SetFloatStat(value, ref m_health, ref m_maxHealth); }
+        set { SetFloatStat(value, ref m_health, m_maxHealth); }
     }
 
     public float MaxAttack
@@ -82,7 +105,7 @@ public class UnitStats : MonoBehaviour
     public float Attack
     {
         get { return m_attack; }
-        set { SetFloatStat(value, ref m_attack, ref m_maxAttack); }
+        set { SetFloatStat(value, ref m_attack, m_maxAttack); }
     }
 
     public float MaxDefence
@@ -94,7 +117,7 @@ public class UnitStats : MonoBehaviour
     public float Defence
     {
         get { return m_defence; }
-        set { SetFloatStat(value, ref m_defence, ref m_maxDefence); }
+        set { SetFloatStat(value, ref m_defence, m_maxDefence); }
     }
 
     public float MaxSpeed
@@ -106,7 +129,7 @@ public class UnitStats : MonoBehaviour
     public float Speed
     {
         get { return m_speed; }
-        set { SetFloatStat(value, ref m_speed, ref m_maxSpeed); }
+        set { SetFloatStat(value, ref m_speed, m_maxSpeed); }
     }
 
     public float MaxEvasion
@@ -118,7 +141,7 @@ public class UnitStats : MonoBehaviour
     public float Evasion
     {
         get { return m_evasion; }
-        set { SetFloatStat(value, ref m_evasion, ref m_maxEvasion); }
+        set { SetFloatStat(value, ref m_evasion, m_maxEvasion); }
     }
 
     public float MaxAccuracy
@@ -130,7 +153,7 @@ public class UnitStats : MonoBehaviour
     public float Accuracy
     {
         get { return m_accuracy; }
-        set { SetFloatStat(value, ref m_accuracy, ref m_maxAccuracy); }
+        set { SetFloatStat(value, ref m_accuracy, m_maxAccuracy); }
     }
 
     public void SetMoveSelected(int _moveIndex)

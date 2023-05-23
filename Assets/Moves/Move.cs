@@ -16,9 +16,9 @@ public class Move : ScriptableObject
     public float Speed { get { return m_speed; } }
     public float Accuracy { get { return m_accuracy; } }
 
-    public void SetUpPlayableDirector(PlayableDirector _director, UnitStats _executorUnit, UnitStats _targetUnit)
+    public void SetUpPlayableDirector(PlayableDirector _director, Unit _executorUnit, Unit _targetUnit)
     {
-        void AssignAnimationBinding(UnitStats _unitStats, PlayableBinding _playableBinding)
+        void AssignAnimationBinding(Unit _Unit, PlayableBinding _playableBinding)
         {
             void ReplaceTrackClips(AnimationTrack _track)
             {
@@ -33,7 +33,7 @@ public class Move : ScriptableObject
                     animationAsset.clip = null;
 
                     //Check whether the animation clip can be replaced
-                    UnitStats.UnitAnimation unitAnimation = Array.Find(_unitStats.m_unitAnimations, i => i.m_name == clip.displayName);
+                    Unit.UnitAnimation unitAnimation = Array.Find(_Unit.m_unitAnimations, i => i.m_name == clip.displayName);
                     if (unitAnimation.m_name == "") continue;
 
                     //Replace the animation
@@ -42,7 +42,7 @@ public class Move : ScriptableObject
             }
 
             //Set the unit animator to director bindings
-            Animator animator = _unitStats.GetComponent<Animator>();
+            Animator animator = _Unit.GetComponent<Animator>();
             _director.SetGenericBinding(_playableBinding.sourceObject, animator);
 
             //Get the animation track and replace its animation clips

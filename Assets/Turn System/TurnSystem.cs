@@ -2,19 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
+using static UnityEngine.UI.CanvasScaler;
 
-/*
-Notes to prevent confusion on the turn system
- - A turn the state where actions is performed by a unit whether that would be using an item or attacking
- - 
-*/
-
+[RequireComponent(typeof(PlayableDirector))]
 public class TurnSystem : MonoBehaviour
 {
+
     #region Classes, Enums and Structs
     public enum BattleState { SelectMove, SelectTarget, ExecuteMoves, }
 
@@ -47,6 +45,7 @@ public class TurnSystem : MonoBehaviour
 
     #endregion
     
+    public static TurnSystem m_singleton { get; private set; }
     StateMachine m_machine = new StateMachine();
     public BattleState CurrentBattleState
     {
@@ -58,7 +57,7 @@ public class TurnSystem : MonoBehaviour
 
     //Player and enemy information
     [Header("Player and Enemy information")]
-    public List<UnitStats> m_players, m_enemies, m_neutral; //The stored player & enemy units
+    public List<Unit> m_players, m_enemies, m_neutral; //The stored player & enemy units
     [SerializeField] PlayerPositionsClass[] m_playerPositions; //The position of the player units when a battle starts
     public PlayerPositionsClass[] PlayerPositions
     {
@@ -74,7 +73,7 @@ public class TurnSystem : MonoBehaviour
     [Header("Unit and Move Selection information")]
     int m_playerSelectIndex = 0; //The index of the player unit who the player is currently selecting a move for
 
-    public UnitStats[] m_unitTurnOrder { get; private set; } //Array that orders the Units from fastest to slowest
+    public Unit[] m_unitTurnOrder { get; private set; } //Array that orders the Units from fastest to slowest
     int m_unitTurnIndex = 0; //Used to iterate through m_unitTurnOrder to perform the action of the unit in the array
 
     public uint m_turnNumber { get; private set; } = 0U; //Number of turns performed since the battle as begun
@@ -93,11 +92,19 @@ public class TurnSystem : MonoBehaviour
 #if UNITY_EDITOR
     [Header("Debug")]
     public int m_playerPositionsDebugIndex;
-    public UnitStats m_selectedTarget;
+    public Unit m_selectedTarget;
 #endif
 
     void Awake()
     {
+        //Ensure that this component is a singleton
+        if (m_singleton == null) m_singleton = this;
+        else
+        {
+            Debug.LogWarning("There must only be one TurnSystem object in a scene. To maintain this, the TurnSystem component in " + gameObject.name + " is destroyed");
+            Destroy(this);
+        }
+
         //Assign Components
         m_director = GetComponent<PlayableDirector>();
     }
@@ -105,15 +112,12 @@ public class TurnSystem : MonoBehaviour
     void Start()
     {
         //Find Units
-        List<UnitStats> neutralPlayers = new List<UnitStats>();
-        foreach (UnitStats unit in FindObjectsOfType<UnitStats>(true))
-            switch (unit.m_unitType)
-            {
-                case UnitStats.UnitType.Player: m_players.Add(unit); break;
-                case UnitStats.UnitType.Enemy: m_enemies.Add(unit); break;
-                case UnitStats.UnitType.Neutral: m_neutral.Add(unit); break;
-                case UnitStats.UnitType.NeutralPlayer: m_neutral.Add(unit); neutralPlayers.Add(unit); break;
-            }
+        List<Unit> neutralPlayers = new List<Unit>();
+        foreach (Unit unit in FindObjectsOfType<Unit>(true))
+        {
+            AddUnit(unit);
+            if (unit.m_unitType == Unit.UnitType.NeutralPlayer) neutralPlayers.Add(unit);
+        }
         
         //Ensure GoToPreviousTurnButton is disabled
         m_commandUI.m_backButton.gameObject.SetActive(false);
@@ -121,7 +125,7 @@ public class TurnSystem : MonoBehaviour
         //Prepare Players
         for (int i = 0; i < m_players.Count; i++)
         {
-            UnitStats unit = m_players[i];
+            Unit unit = m_players[i];
 
             //Sets the player positions
             unit.transform.position = m_playerPositions[m_players.Count-1].m_positions[i];
@@ -130,7 +134,7 @@ public class TurnSystem : MonoBehaviour
         //Prepare Neuteral Players
         for (int i = 0; i < neutralPlayers.Count; i++)
         {
-            UnitStats unit = neutralPlayers[i];
+            Unit unit = neutralPlayers[i];
 
             //Sets the neuteral positions
             unit.transform.position = m_playerPositions[m_players.Count + neutralPlayers.Count - 2].m_positions[i];
@@ -253,7 +257,7 @@ public class TurnSystem : MonoBehaviour
         m_selectTargetUI.m_pannel.gameObject.SetActive(false);
     }
 
-    public void SelectTarget(UnitStats _selectedTarget)
+    public void SelectTarget(Unit _selectedTarget)
     {
         //Dont select target if not in the appropriate state
         if (m_machine.CurrentStateName != BattleState.SelectTarget.ToString()) return;
@@ -282,14 +286,14 @@ public class TurnSystem : MonoBehaviour
     void ExecuteMovesStart()
     {
         //For Every enemy select a move
-        foreach (UnitStats enemy in m_enemies)
+        foreach (Unit enemy in m_enemies)
         {
             enemy.m_targetUnit = m_players[UnityEngine.Random.Range(0, m_players.Count-1)];
             enemy.SetMoveSelected(UnityEngine.Random.Range(0, enemy.m_unitMoves.Count-1));
         }
 
         //Order Units in order of speed
-        m_unitTurnOrder = new UnitStats[m_players.Count + m_enemies.Count + m_neutral.Count];
+        m_unitTurnOrder = new Unit[m_players.Count + m_enemies.Count + m_neutral.Count];
         m_players.CopyTo(m_unitTurnOrder, 0);
         m_enemies.CopyTo(m_unitTurnOrder, m_players.Count);
         m_neutral.CopyTo(m_unitTurnOrder, m_players.Count + m_enemies.Count);
@@ -297,9 +301,9 @@ public class TurnSystem : MonoBehaviour
         Array.Sort
         (
             m_unitTurnOrder,
-            delegate (UnitStats _left, UnitStats _right)
+            delegate (Unit _left, Unit _right)
             {
-                float GetUnitSpeed(ref UnitStats _unit) { return _unit.Speed + _unit.m_moveSelected.Speed; }
+                float GetUnitSpeed(ref Unit _unit) { return _unit.Speed + _unit.m_moveSelected.Speed; }
                 return (int)((GetUnitSpeed(ref _right) - GetUnitSpeed(ref _left)) * 100);
             }
         );
@@ -313,8 +317,8 @@ public class TurnSystem : MonoBehaviour
             //Loop though all units
             for (m_unitTurnIndex = 0; m_unitTurnIndex < m_unitTurnOrder.Length; m_unitTurnIndex++)
             {
-                UnitStats executorUnit = m_unitTurnOrder[m_unitTurnIndex];
-                UnitStats targetUnit = executorUnit.m_targetUnit;
+                Unit executorUnit = m_unitTurnOrder[m_unitTurnIndex];
+                Unit targetUnit = executorUnit.m_targetUnit;
 
                 //Skip Player Units that have no health
                 if (executorUnit.Health <= 0.0f) continue;
@@ -363,6 +367,22 @@ public class TurnSystem : MonoBehaviour
             playerPositionIndex++;
         }
     }
+
+    public void AddUnit(Unit _unit)
+    {
+        static void AddToList(ref List<Unit> _list, Unit _unit)
+        {
+            if (_list.Contains(_unit)) return;
+            _list.Add(_unit);
+        }
+
+        switch (_unit.m_unitType)
+        {
+            case Unit.UnitType.Player: AddToList(ref m_players, _unit); break;
+            case Unit.UnitType.Enemy:  AddToList(ref m_enemies, _unit); break;
+            default:                   AddToList(ref m_neutral, _unit); break;
+        }
+    }
 }
 
 #if UNITY_EDITOR
@@ -373,7 +393,7 @@ public class TurnSystemEditor : Editor
     {
         base.OnInspectorGUI();
         TurnSystem turnSystem = (TurnSystem)target;
-
+        
         //Check player position validity
         turnSystem.CheckPlayerPositionsValidity();
 

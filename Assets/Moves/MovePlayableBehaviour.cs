@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -19,7 +17,7 @@ public class MovePlayableBehaviour : PlayableBehaviour
 
     public override void OnBehaviourPlay(Playable playable, FrameData info)
     {
-        var unit = info.output.GetUserData() as UnitStats;
+        var unit = info.output.GetUserData() as Unit;
 
         //Apply Stat Modifier
         unit.Health += m_health;
@@ -28,9 +26,6 @@ public class MovePlayableBehaviour : PlayableBehaviour
         unit.Speed += m_speed;
         unit.Evasion += m_evasion;
         unit.Accuracy += m_accuracy;
-
-        //Update UI
-        UnitUI unitUI = UnitUI.FindUIWithUnitStats(unit);
-        if (unitUI != null) unitUI.UpdateUI();
+        unit.OnUpdate.Invoke();
     }
 }
