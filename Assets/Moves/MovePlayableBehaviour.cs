@@ -17,7 +17,7 @@ public class MovePlayableBehaviour : PlayableBehaviour
 
     public override void OnBehaviourPlay(Playable playable, FrameData info)
     {
-        var unit = info.output.GetUserData() as Unit;
+        var unit = info.output.GetUserData() as UnitBase;
 
         //Apply Stat Modifier
         unit.Health += m_health;

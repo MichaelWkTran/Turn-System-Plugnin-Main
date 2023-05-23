@@ -14,6 +14,6 @@ public class MovePlayablePrebab : MonoBehaviour
     {
         //Bind objects
         foreach (var objectBinding in m_objectsToBind)
-            Move.BindToDirector(objectBinding.m_streamName, objectBinding.m_objectToBind); 
+            MoveBase.BindToDirector(objectBinding.m_streamName, objectBinding.m_objectToBind); 
     }
 }

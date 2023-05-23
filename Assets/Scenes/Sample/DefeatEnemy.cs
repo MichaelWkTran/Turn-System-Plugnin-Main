@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DefeatEnemy : MonoBehaviour
 {
-    public void OnUnitUpdate(Unit _unit)
+    public void OnUnitUpdate(UnitBase _unit)
     {
         if (_unit.Health <= 0)
         {

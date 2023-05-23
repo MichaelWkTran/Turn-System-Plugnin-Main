@@ -2339,39 +2339,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 2062684968861327012}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 365d7d1cc888216418a7e5aa3170e725, type: 3}
+  m_Script: {fileID: 11500000, guid: 0343b8bc0c9327946b6b8849e5771005, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_players: []
   m_enemies: []
   m_neutral: []
-  m_playerPositions:
-  - m_positions:
-    - {x: -6.66, y: -2.5, z: 0}
-  - m_positions:
-    - {x: -7.0277643, y: -2.4179258, z: 0}
-    - {x: -2.5417473, y: -2.187647, z: 0}
-  - m_positions:
-    - {x: 0.42488194, y: 0, z: 0}
-    - {x: 0, y: 0, z: 0}
-    - {x: -2.0688705, y: 0, z: 0}
-  - m_positions:
-    - {x: -0.6671636, y: 0, z: 0}
-    - {x: 1.299488, y: 0, z: 0}
-    - {x: 4.033963, y: 0, z: 0}
-    - {x: 5.02798, y: 0, z: 0}
-  m_battleUI: {fileID: 2062684968109192963}
+  m_battleUI: {fileID: 0}
+  m_playerPositions: []
   m_commandUI:
-    m_pannel: {fileID: 2062684968352747706}
-    m_backButton: {fileID: 5056961082815879248}
+    m_pannel: {fileID: 0}
+    m_backButton: {fileID: 0}
   m_fightUI:
-    m_pannel: {fileID: 2062684967397958704}
-    m_moveButtonPrefab: {fileID: 4690740401835786287, guid: 5d6383119b35f7344bb3fd306b417449, type: 3}
-    m_moveLayoutGroup: {fileID: 7991460560259330405}
+    m_pannel: {fileID: 0}
+    m_moveButtonPrefab: {fileID: 0}
+    m_moveLayoutGroup: {fileID: 0}
   m_itemUI:
-    m_pannel: {fileID: 5945432049408142548}
+    m_pannel: {fileID: 0}
   m_selectTargetUI:
-    m_pannel: {fileID: 5423661884168195490}
+    m_pannel: {fileID: 0}
   m_playerPositionsDebugIndex: 0
   m_selectedTarget: {fileID: 0}
 --- !u!320 &6081585512035197827

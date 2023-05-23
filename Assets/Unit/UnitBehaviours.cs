@@ -16,7 +16,7 @@ public class UnitBehaviours : MonoBehaviour
 
     public void PointerEnter()
     {
-        if (FindObjectOfType<TurnSystem>().CurrentBattleState != TurnSystem.BattleState.SelectTarget) return;
+        if (FindObjectOfType<TurnSystemSample>().CurrentBattleState != TurnSystemSample.BattleState.SelectTarget) return;
         m_spriteRenderer.material = m_flashMaterial;
     }
 

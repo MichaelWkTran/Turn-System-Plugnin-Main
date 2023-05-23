@@ -4,10 +4,10 @@ using System;
 
 public class UnitUI : MonoBehaviour
 {
-    public Unit m_Unit;
+    public UnitBase m_Unit;
     public Slider m_healthSlider;
 
-    public void Init(Unit _Unit)
+    public void Init(UnitBase _Unit)
     {
         if (_Unit == null || m_Unit == null) return;
         m_Unit = _Unit;
@@ -26,7 +26,7 @@ public class UnitUI : MonoBehaviour
         UpdateSlider(m_healthSlider, m_Unit.Health, m_Unit.MaxHealth);
     }
 
-    static public UnitUI FindUIWithUnit(Unit _Unit)
+    static public UnitUI FindUIWithUnit(UnitBase _Unit)
     {
         UnitUI[] unitUIInWorld = FindObjectsOfType<UnitUI>(true);
         return Array.Find(unitUIInWorld, i => i.m_Unit == _Unit);

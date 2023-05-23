@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Unit : MonoBehaviour
+public class UnitBase : MonoBehaviour
 {
     public enum UnitType
     {
@@ -26,11 +26,11 @@ public class Unit : MonoBehaviour
     [SerializeField] float m_minAccuracy; [SerializeField] float m_maxAccuracy; [ReadOnly, SerializeField] float m_accuracy;
 
     //Moves List
-    public List<Move> m_unitMoves;
+    public List<MoveBase> m_unitMoves;
 
     //Battle varribles
-    public Move m_moveSelected;
-    public Unit m_targetUnit;
+    public MoveBase m_moveSelected;
+    public UnitBase m_targetUnit;
 
     //Animations
     [System.Serializable] public struct UnitAnimation
@@ -53,13 +53,13 @@ public class Unit : MonoBehaviour
 
     void Start()
     {
-        TurnSystem turnSystem = FindObjectOfType<TurnSystem>();
+        TurnSystemBase turnSystem = FindObjectOfType<TurnSystemBase>();
         turnSystem.AddUnit(this);
     }
 
     void OnDestroy()
     {
-        TurnSystem turnSystem = FindObjectOfType<TurnSystem>();
+        TurnSystemBase turnSystem = FindObjectOfType<TurnSystemBase>();
         if (turnSystem != null)
         {
             //Remove the unit from turnsystem list if destroyed
