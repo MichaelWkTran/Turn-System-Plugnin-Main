@@ -285,16 +285,36 @@ MonoBehaviour:
   m_unitName: 
   m_unitType: 0
   m_experience: 0
+  OnUpdate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1719567494}
+        m_TargetAssemblyTypeName: UnitUI, Assembly-CSharp
+        m_MethodName: UpdateUI
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_maxHealth: 100
   m_health: 0
+  m_minAttack: 0
   m_maxAttack: 0
   m_attack: 0
+  m_minDefence: 0
   m_maxDefence: 0
   m_defence: 0
+  m_minSpeed: 0
   m_maxSpeed: 0
   m_speed: 0
+  m_minEvasion: 0
   m_maxEvasion: 0
   m_evasion: 0
+  m_minAccuracy: 0
   m_maxAccuracy: 0
   m_accuracy: 0
   m_unitMoves:
@@ -420,7 +440,7 @@ MonoBehaviour:
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 477264080}
-            m_ObjectArgumentAssemblyTypeName: UnitStats, Assembly-CSharp
+            m_ObjectArgumentAssemblyTypeName: Unit, Assembly-CSharp
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -525,16 +545,36 @@ MonoBehaviour:
   m_unitName: 
   m_unitType: 1
   m_experience: 0
+  OnUpdate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 845282157}
+        m_TargetAssemblyTypeName: UnitUI, Assembly-CSharp
+        m_MethodName: UpdateUI
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_maxHealth: 100
   m_health: 0
+  m_minAttack: 0
   m_maxAttack: 0
   m_attack: 0
+  m_minDefence: 0
   m_maxDefence: 0
   m_defence: 0
+  m_minSpeed: 0
   m_maxSpeed: 0
   m_speed: 0
+  m_minEvasion: 0
   m_maxEvasion: 0
   m_evasion: 0
+  m_minAccuracy: 0
   m_maxAccuracy: 0
   m_accuracy: 0
   m_unitMoves:
@@ -660,7 +700,7 @@ MonoBehaviour:
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 742323258}
-            m_ObjectArgumentAssemblyTypeName: UnitStats, Assembly-CSharp
+            m_ObjectArgumentAssemblyTypeName: Unit, Assembly-CSharp
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -739,7 +779,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d169a4af74789bd43b0117fb2f579fd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Animator: {fileID: 0}
 --- !u!1 &845282154 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 721839438845045427, guid: 7a4e6f3922461464791888bfc0961aae, type: 3}
@@ -783,7 +822,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00362edbdbcc0b349b12d09f0ee7c0fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_unitStats: {fileID: 742323258}
+  m_Unit: {fileID: 742323258}
   m_healthSlider: {fileID: 845282160}
 --- !u!114 &845282158 stripped
 MonoBehaviour:
@@ -1009,7 +1048,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00362edbdbcc0b349b12d09f0ee7c0fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_unitStats: {fileID: 477264080}
+  m_Unit: {fileID: 477264080}
   m_healthSlider: {fileID: 1719567497}
 --- !u!114 &1719567495 stripped
 MonoBehaviour:
@@ -1277,6 +1316,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2062684968861327018, guid: 872cc4e0e0c3b1f40a97c473fc69c34a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2062684968861327019, guid: 872cc4e0e0c3b1f40a97c473fc69c34a, type: 3}
+      propertyPath: m_playerPositionsDebugIndex
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6081585512035197827, guid: 872cc4e0e0c3b1f40a97c473fc69c34a, type: 3}
