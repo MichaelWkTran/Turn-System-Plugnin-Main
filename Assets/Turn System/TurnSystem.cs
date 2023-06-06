@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
-using static UnityEngine.UI.CanvasScaler;
 
 [RequireComponent(typeof(PlayableDirector))]
 public class TurnSystem : MonoBehaviour
@@ -17,7 +14,7 @@ public class TurnSystem : MonoBehaviour
     public enum BattleState { SelectMove, SelectTarget, ExecuteMoves, }
 
     //The position of a player unit
-    [Serializable] public class PlayerPositionsClass
+    [Serializable] public class PlayerPositionsStruct
     {
         public Vector3[] m_positions;
     }
@@ -58,8 +55,8 @@ public class TurnSystem : MonoBehaviour
     //Player and enemy information
     [Header("Player and Enemy information")]
     public List<Unit> m_players, m_enemies, m_neutral; //The stored player & enemy units
-    [SerializeField] PlayerPositionsClass[] m_playerPositions; //The position of the player units when a battle starts
-    public PlayerPositionsClass[] PlayerPositions
+    [SerializeField] PlayerPositionsStruct[] m_playerPositions; //The position of the player units when a battle starts
+    public PlayerPositionsStruct[] PlayerPositions
     {
         get { return m_playerPositions; }
         set
@@ -72,10 +69,6 @@ public class TurnSystem : MonoBehaviour
     //Selecting enemies or players to target
     [Header("Unit and Move Selection information")]
     int m_playerSelectIndex = 0; //The index of the player unit who the player is currently selecting a move for
-
-    public Unit[] m_unitTurnOrder { get; private set; } //Array that orders the Units from fastest to slowest
-    int m_unitTurnIndex = 0; //Used to iterate through m_unitTurnOrder to perform the action of the unit in the array
-
     public uint m_turnNumber { get; private set; } = 0U; //Number of turns performed since the battle as begun
 
     //Other Variables
@@ -163,7 +156,7 @@ public class TurnSystem : MonoBehaviour
     {
         //Draw Unit Gizmos for player positions
         {
-            PlayerPositionsClass playerPositionsClass = m_playerPositions[m_playerPositionsDebugIndex];
+            PlayerPositionsStruct playerPositionsClass = m_playerPositions[m_playerPositionsDebugIndex];
             for (int posIndex = 0; posIndex < playerPositionsClass.m_positions.Length; posIndex++)
             {
                 GUIStyle guiStye = new GUIStyle();
@@ -182,10 +175,7 @@ public class TurnSystem : MonoBehaviour
     void SelectMoveStart()
     {
         //Reset turn system
-        if (m_playerSelectIndex >= m_players.Count)
-        {
-            m_playerSelectIndex = 0;
-        }
+        if (m_playerSelectIndex >= m_players.Count) m_playerSelectIndex = 0;
 
         //Enables/Disables UI
         m_battleUI.gameObject.SetActive(true);
@@ -193,11 +183,13 @@ public class TurnSystem : MonoBehaviour
         m_commandUI.m_backButton.gameObject.SetActive(m_playerSelectIndex > 0);
 
         //Skip Player Units that have no health
+        bool isFirstUnit = m_playerSelectIndex <= 0;
         for (; m_playerSelectIndex < m_players.Count; m_playerSelectIndex++)
         {
             if (m_players[m_playerSelectIndex].Health >= 0.0f) break;
 
             //Lose the game if all players have no health
+            if (!isFirstUnit) continue;
             if (m_playerSelectIndex + 1 >= m_players.Count) { Lost(); return; }
         }
 
@@ -210,7 +202,7 @@ public class TurnSystem : MonoBehaviour
 
             int moveIndex = i;
             moveButton.onClick.AddListener(delegate { SelectMove(m_players[m_playerSelectIndex].m_unitMoves[moveIndex]); });
-            moveButton.GetComponentInChildren<TMP_Text>().text = move.name;
+            moveButton.GetComponentInChildren<Text>().text = move.name;
         }
     }
 
@@ -293,14 +285,14 @@ public class TurnSystem : MonoBehaviour
         }
 
         //Order Units in order of speed
-        m_unitTurnOrder = new Unit[m_players.Count + m_enemies.Count + m_neutral.Count];
-        m_players.CopyTo(m_unitTurnOrder, 0);
-        m_enemies.CopyTo(m_unitTurnOrder, m_players.Count);
-        m_neutral.CopyTo(m_unitTurnOrder, m_players.Count + m_enemies.Count);
+        Unit[] unitTurnOrder = new Unit[m_players.Count + m_enemies.Count + m_neutral.Count];
+        m_players.CopyTo(unitTurnOrder, 0);
+        m_enemies.CopyTo(unitTurnOrder, m_players.Count);
+        m_neutral.CopyTo(unitTurnOrder, m_players.Count + m_enemies.Count);
 
         Array.Sort
         (
-            m_unitTurnOrder,
+            unitTurnOrder,
             delegate (Unit _left, Unit _right)
             {
                 float GetUnitSpeed(ref Unit _unit) { return _unit.Speed + _unit.m_moveSelected.Speed; }
@@ -315,9 +307,9 @@ public class TurnSystem : MonoBehaviour
         IEnumerator ExecuteMovesCoroutine()
         {
             //Loop though all units
-            for (m_unitTurnIndex = 0; m_unitTurnIndex < m_unitTurnOrder.Length; m_unitTurnIndex++)
+            for (int unitTurnIndex = 0; unitTurnIndex < unitTurnOrder.Length; unitTurnIndex++)
             {
-                Unit executorUnit = m_unitTurnOrder[m_unitTurnIndex];
+                Unit executorUnit = unitTurnOrder[unitTurnIndex];
                 Unit targetUnit = executorUnit.m_targetUnit;
 
                 //Skip Player Units that have no health
@@ -359,7 +351,7 @@ public class TurnSystem : MonoBehaviour
     public void CheckPlayerPositionsValidity()
     {
         int playerPositionIndex = 0;
-        foreach (PlayerPositionsClass playerPosition in m_playerPositions)
+        foreach (PlayerPositionsStruct playerPosition in m_playerPositions)
         {
             if (playerPosition.m_positions.Length != playerPositionIndex + 1)
                 Array.Resize(ref playerPosition.m_positions, playerPositionIndex + 1);
@@ -416,10 +408,10 @@ public class TurnSystemEditor : Editor
 
         //Set player position via handles
         {
-            TurnSystem.PlayerPositionsClass[] playerPositions = turnSystem.PlayerPositions;
+            TurnSystem.PlayerPositionsStruct[] playerPositions = turnSystem.PlayerPositions;
 
             EditorGUI.BeginChangeCheck();
-            TurnSystem.PlayerPositionsClass playerPositionsClass = playerPositions[turnSystem.m_playerPositionsDebugIndex];
+            TurnSystem.PlayerPositionsStruct playerPositionsClass = playerPositions[turnSystem.m_playerPositionsDebugIndex];
             for (int posIndex = 0; posIndex < playerPositionsClass.m_positions.Length; posIndex++)
             {
                 playerPositionsClass.m_positions[posIndex] = Handles.PositionHandle

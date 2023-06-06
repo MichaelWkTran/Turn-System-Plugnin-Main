@@ -59,9 +59,9 @@ public class Move : ScriptableObject
         {
             //Set the unit and animator bindings
             case "Executor Unit Stats": _director.SetGenericBinding(playableAssetOutput.sourceObject, _executorUnit); break;
-            case "Target Unit Stats": _director.SetGenericBinding(playableAssetOutput.sourceObject, _targetUnit); break;
-            case "Executor Animator": AssignAnimationBinding(_executorUnit, playableAssetOutput); break;
-            case "Target Animator": AssignAnimationBinding(_targetUnit, playableAssetOutput); break;
+            case "Target Unit Stats":   _director.SetGenericBinding(playableAssetOutput.sourceObject, _targetUnit); break;
+            case "Executor Animator":   AssignAnimationBinding(_executorUnit, playableAssetOutput); break;
+            case "Target Animator":     AssignAnimationBinding(_targetUnit, playableAssetOutput); break;
         }
     }
 
