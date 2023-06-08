@@ -185,7 +185,7 @@ public class TurnSystem : MonoBehaviour
         bool isFirstUnit = m_playerSelectIndex <= 0;
         for (; m_playerSelectIndex < m_players.Count; m_playerSelectIndex++)
         {
-            if (m_players[m_playerSelectIndex].Health >= 0.0f) break;
+            if (m_players[m_playerSelectIndex].Health > 0.0f) break;
 
             //Lose the game if all players have no health
             if (!isFirstUnit) continue;

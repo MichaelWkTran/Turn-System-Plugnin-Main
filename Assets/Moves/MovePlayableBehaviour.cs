@@ -17,6 +17,7 @@ public class MovePlayableBehaviour : PlayableBehaviour
 
     public override void OnBehaviourPlay(Playable playable, FrameData info)
     {
+        if (!Application.isPlaying) return;
         var unit = info.output.GetUserData() as Unit;
         
         //Apply Stat Modifier

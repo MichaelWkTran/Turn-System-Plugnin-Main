@@ -9,9 +9,5 @@ AnimatorOverrideController:
   m_Name: PlaceHolderPlayer
   m_Controller: {fileID: 9100000, guid: 01be5b681e3254546bb564913b49dd06, type: 2}
   m_Clips:
-  - m_OriginalClip: {fileID: 1624593205714598167, guid: 4813cfbfb3c6ee8458203cc8c5849895, type: 3}
-    m_OverrideClip: {fileID: 7400000, guid: c01a228aa33c3ba44b25fe18934ae242, type: 2}
-  - m_OriginalClip: {fileID: 7400000, guid: 1c71754047197e04f9e3d64eb05a4f60, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: c01a228aa33c3ba44b25fe18934ae242, type: 2}
   - m_OriginalClip: {fileID: 7400000, guid: 200ee25cb565f3440891ccf442e3952a, type: 2}
     m_OverrideClip: {fileID: 7400000, guid: c01a228aa33c3ba44b25fe18934ae242, type: 2}
