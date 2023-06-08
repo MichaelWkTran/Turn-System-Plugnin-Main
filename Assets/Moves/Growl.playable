@@ -336,9 +336,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of PlaceHolderPlayerDamage
+  m_Name: AnimationPlayableAsset of PlaceHolderEnemyDamage
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: 7400000, guid: 3bb6e9b315564334bb52c4f457d86962, type: 2}
+  m_Clip: {fileID: 7400000, guid: 1c71754047197e04f9e3d64eb05a4f60, type: 2}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1
@@ -538,21 +538,7 @@ MonoBehaviour:
     m_speed: 0
     m_evasion: 0
     m_accuracy: 0
-    m_moveProperties:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 11500000, guid: 063ce0bfb02cf1f48adc9290764e2452, type: 3}
-          m_TargetAssemblyTypeName: 
-          m_MethodName: 
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+    m_moveProperties: []
 --- !u!114 &8423769038272635302
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -563,9 +549,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030f85c3f73729f4f976f66ffb23b875, type: 3}
-  m_Name: AnimationPlayableAsset of PlaceholderPlayerIdle
+  m_Name: AnimationPlayableAsset of PlaceHolderEnemyIdle
   m_EditorClassIdentifier: 
-  m_Clip: {fileID: 7400000, guid: c01a228aa33c3ba44b25fe18934ae242, type: 2}
+  m_Clip: {fileID: 7400000, guid: 200ee25cb565f3440891ccf442e3952a, type: 2}
   m_Position: {x: 0, y: 0, z: 0}
   m_EulerAngles: {x: 0, y: 0, z: 0}
   m_UseTrackMatchFields: 1

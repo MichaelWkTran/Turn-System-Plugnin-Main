@@ -12,18 +12,17 @@ public class Unit : MonoBehaviour
         NeutralPlayer, //Same as neutral but spawns on the player side
     }
 
-    public string m_unitName;
-    public UnitType m_unitType;
-    public float m_experience;
-    public UnityEvent OnUpdate;
+    public string m_unitName; //The name of the unit
+    public UnitType m_unitType; //What side is the unit on
+    public UnityEvent OnUpdate; //How would the unit repond when their stats are modified
 
-    //Health
+    //Unit stats
     [SerializeField] float m_maxHealth;   [ReadOnly, SerializeField] float m_health;
-    [SerializeField] float m_minAttack; [SerializeField] float m_maxAttack;   [ReadOnly, SerializeField] float m_attack;
-    [SerializeField] float m_minDefence; [SerializeField] float m_maxDefence;  [ReadOnly, SerializeField] float m_defence;
-    [SerializeField] float m_minSpeed; [SerializeField] float m_maxSpeed;    [ReadOnly, SerializeField] float m_speed;
-    [SerializeField] float m_minEvasion; [SerializeField] float m_maxEvasion;  [ReadOnly, SerializeField] float m_evasion;
-    [SerializeField] float m_minAccuracy; [SerializeField] float m_maxAccuracy; [ReadOnly, SerializeField] float m_accuracy;
+    [SerializeField] float m_minAttack;   [SerializeField]           float m_maxAttack;   [ReadOnly, SerializeField] float m_attack;
+    [SerializeField] float m_minDefence;  [SerializeField]           float m_maxDefence;  [ReadOnly, SerializeField] float m_defence;
+    [SerializeField] float m_minSpeed;    [SerializeField]           float m_maxSpeed;    [ReadOnly, SerializeField] float m_speed;
+    [SerializeField] float m_minEvasion;  [SerializeField]           float m_maxEvasion;  [ReadOnly, SerializeField] float m_evasion;
+    [SerializeField] float m_minAccuracy; [SerializeField]           float m_maxAccuracy; [ReadOnly, SerializeField] float m_accuracy;
 
     //Moves List
     public List<Move> m_unitMoves;

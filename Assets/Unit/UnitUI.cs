@@ -6,6 +6,7 @@ public class UnitUI : MonoBehaviour
 {
     public Unit m_Unit;
     public Slider m_healthSlider;
+    public Text m_healthText;
 
     public void Init(Unit _Unit)
     {
@@ -13,22 +14,17 @@ public class UnitUI : MonoBehaviour
         m_Unit = _Unit;
     }
 
-    void UpdateSlider(Slider _slider, float _value, float _maxValue)
-    {
-        _slider.maxValue = _maxValue;
-        _slider.value = _value;
-    }
-
     public void UpdateUI()
     {
         if (m_Unit == null) { Destroy(gameObject); return; }
 
         UpdateSlider(m_healthSlider, m_Unit.Health, m_Unit.MaxHealth);
+        m_healthText.text = m_Unit.Health.ToString() + "/" + m_Unit.MaxHealth.ToString();
     }
 
-    static public UnitUI FindUIWithUnit(Unit _Unit)
+    void UpdateSlider(Slider _slider, float _value, float _maxValue)
     {
-        UnitUI[] unitUIInWorld = FindObjectsOfType<UnitUI>(true);
-        return Array.Find(unitUIInWorld, i => i.m_Unit == _Unit);
+        _slider.maxValue = _maxValue;
+        _slider.value = _value;
     }
 }

@@ -16,6 +16,19 @@ public class Move : ScriptableObject
     public float Speed { get { return m_speed; } }
     public float Accuracy { get { return m_accuracy; } }
 
+    //A class containing methods that can be triggered by a move control clip placed in the timeline
+    //Each method is be a void function with a Unit parameter named _unit.
+    //A function in the MoveProperties class is called from a move control clip via the variable m_moveProperties in the inspector.
+    //The method to be called is signified by typing its name in an element of that array.
+    public static class MoveProperties
+    {
+        public static void InstantKill(Unit _unit)
+        {
+            _unit.Health = 0;
+        }
+    };
+
+    //Playable Director Methods
     public void SetUpPlayableDirector(PlayableDirector _director, Unit _executorUnit, Unit _targetUnit)
     {
         void AssignAnimationBinding(Unit _Unit, PlayableBinding _playableBinding)

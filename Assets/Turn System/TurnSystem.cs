@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.Timeline;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(PlayableDirector))]
+[RequireComponent(typeof(PlayableDirector), typeof(SignalReceiver))]
 public class TurnSystem : MonoBehaviour
 {
-
     #region Classes, Enums and Structs
     public enum BattleState { SelectMove, SelectTarget, ExecuteMoves, }
 
@@ -50,7 +50,8 @@ public class TurnSystem : MonoBehaviour
         {
             return (BattleState)Enum.Parse(typeof(BattleState), m_machine.CurrentStateName);
         }
-    }
+    } //What is state is the turn system currently in
+    public uint m_turnNumber { get; private set; } = 0U; //Number of turns performed since the battle as begun
 
     //Player and enemy information
     [Header("Player and Enemy information")]
@@ -66,10 +67,8 @@ public class TurnSystem : MonoBehaviour
         }
     }
 
-    //Selecting enemies or players to target
-    [Header("Unit and Move Selection information")]
+    //Unit and Move Selection information
     int m_playerSelectIndex = 0; //The index of the player unit who the player is currently selecting a move for
-    public uint m_turnNumber { get; private set; } = 0U; //Number of turns performed since the battle as begun
 
     //Other Variables
     PlayableDirector m_director;
@@ -277,13 +276,10 @@ public class TurnSystem : MonoBehaviour
     #region Execute Moves
     void ExecuteMovesStart()
     {
-        //For Every enemy select a move
-        foreach (Unit enemy in m_enemies)
-        {
-            enemy.m_targetUnit = m_players[UnityEngine.Random.Range(0, m_players.Count-1)];
-            enemy.SetMoveSelected(UnityEngine.Random.Range(0, enemy.m_unitMoves.Count-1));
-        }
-
+        //Set AI for units
+        UnitAI[] unitAIs = FindObjectsOfType<UnitAI>(false);
+        foreach (UnitAI unitAI in unitAIs) unitAI.SelectMovesTargetAI();
+        
         //Order Units in order of speed
         Unit[] unitTurnOrder = new Unit[m_players.Count + m_enemies.Count + m_neutral.Count];
         m_players.CopyTo(unitTurnOrder, 0);
@@ -312,8 +308,14 @@ public class TurnSystem : MonoBehaviour
                 Unit executorUnit = unitTurnOrder[unitTurnIndex];
                 Unit targetUnit = executorUnit.m_targetUnit;
 
-                //Skip Player Units that have no health
+                //Skip units that have no health
                 if (executorUnit.Health <= 0.0f) continue;
+                //Skip units that have no target to attack
+                if (targetUnit == null) continue;
+                //Skip units that have no move assigned
+                if (executorUnit.m_moveSelected == null) continue;
+                //Skip moves that have no timeline assigned
+                if (executorUnit.m_moveSelected.Timeline == null) continue;
 
                 //Play move animations of units
                 m_director.playableAsset = executorUnit.m_moveSelected.Timeline;
@@ -321,8 +323,13 @@ public class TurnSystem : MonoBehaviour
                 m_director.Play();
 
                 //Wait for the animation to finish
-                yield return new WaitForSeconds((float)executorUnit.m_moveSelected.Timeline.duration);
-
+                bool isMoveFinished = false;
+                void DirectorStopEvent(PlayableDirector _director) { isMoveFinished = true; }
+                
+                m_director.stopped += DirectorStopEvent;
+                yield return new WaitUntil(() => isMoveFinished == true);
+                m_director.stopped -= DirectorStopEvent;
+                
                 //Ensure the animation has finished
                 m_director.Stop();
             }

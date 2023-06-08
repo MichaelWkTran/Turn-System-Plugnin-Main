@@ -1842,6 +1842,7 @@ GameObject:
   - component: {fileID: 2062684968861327018}
   - component: {fileID: 2062684968861327019}
   - component: {fileID: 6081585512035197827}
+  - component: {fileID: 7966038768394599288}
   m_Layer: 0
   m_Name: TurnSystem
   m_TagString: Untagged
@@ -1918,23 +1919,13 @@ PlayableDirector:
   m_GameObject: {fileID: 2062684968861327012}
   m_Enabled: 1
   serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: 604b50e96ddb321478f0aa0b7b084443, type: 2}
+  m_PlayableAsset: {fileID: 0}
   m_InitialState: 0
   m_WrapMode: 2
   m_DirectorUpdateMode: 1
   m_InitialTime: 0
   m_SceneBindings:
   - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: -506927404185043419, guid: 604b50e96ddb321478f0aa0b7b084443, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: 6897421976467745245, guid: 604b50e96ddb321478f0aa0b7b084443, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -3505612030715874467, guid: 604b50e96ddb321478f0aa0b7b084443, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -1042861930522980671, guid: 604b50e96ddb321478f0aa0b7b084443, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -4970834689294288117, guid: 604b50e96ddb321478f0aa0b7b084443, type: 2}
     value: {fileID: 0}
   - key: {fileID: -4970834689294288117, guid: 70233cb88fb211c46aad14712665550c, type: 2}
     value: {fileID: 0}
@@ -1946,6 +1937,8 @@ PlayableDirector:
     value: {fileID: 0}
   - key: {fileID: -1042861930522980671, guid: 70233cb88fb211c46aad14712665550c, type: 2}
     value: {fileID: 0}
+  - key: {fileID: -4970834689294288117, guid: 604b50e96ddb321478f0aa0b7b084443, type: 2}
+    value: {fileID: 7966038768394599288}
   m_ExposedReferences:
     m_References:
     - 2f371962422bfc14d9b783fad1b589d6: {fileID: 2062684967246614093}
@@ -1953,6 +1946,21 @@ PlayableDirector:
     - 78d684624698fff4b8bdd5f298c24b95: {fileID: 0}
     - 072078f86c0df784d95ff061a9ecbad4: {fileID: 0}
     - 861cd8adbdd1f084496f944991fdeeb3: {fileID: 2062684967246614093}
+--- !u!114 &7966038768394599288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2062684968861327012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals: []
+    m_Events: []
 --- !u!1 &2418117419457358970
 GameObject:
   m_ObjectHideFlags: 0
