@@ -9,12 +9,10 @@ public class Move : ScriptableObject
     [SerializeField, TextArea] string m_description; //The description of the move
     [SerializeField] TimelineAsset m_timeline; //Stores move animation and how it impacts the units (this includes damaging the units)
     [SerializeField] float m_speed; //Impacts what order the units attack in
-    [SerializeField] float m_accuracy; //The chance on whether the move would hit
 
     public TimelineAsset Timeline { get { return m_timeline; } }
     public string Description { get { return m_description; } }
     public float Speed { get { return m_speed; } }
-    public float Accuracy { get { return m_accuracy; } }
 
     //A class containing methods that can be triggered by a move control clip placed in the timeline
     //Each method is be a void function with a Unit parameter named _unit.
