@@ -73,6 +73,7 @@ public class StateMachine
 
     public void End()
     {
+        if (m_currentState != null) return;
         m_currentState.m_exit();
         m_currentState = null;
     }

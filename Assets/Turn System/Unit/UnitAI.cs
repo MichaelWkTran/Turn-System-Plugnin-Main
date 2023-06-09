@@ -16,11 +16,11 @@ public class UnitAI : MonoBehaviour
         //Select random player unit to target
         {
             var playerUnits = FindObjectOfType<TurnSystem>().m_players;
-            m_unit.m_targetUnit = playerUnits[Random.Range(0, playerUnits.Count - 1)];
+            m_unit.m_targetUnit = playerUnits[Random.Range(0, playerUnits.Count)];
         }
 
         //Select random move to use
-        m_unit.SetMoveSelected(Random.Range(0, m_unit.m_unitMoves.Count - 1));
+        m_unit.SetMoveSelected(Random.Range(0, m_unit.m_unitMoves.Count));
     }
 
     public virtual void OnUnitUpdate(Unit _unit)

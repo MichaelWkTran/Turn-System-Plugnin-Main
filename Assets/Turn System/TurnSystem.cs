@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 using UnityEngine.UI;
@@ -11,7 +13,7 @@ using UnityEngine.UI;
 public class TurnSystem : MonoBehaviour
 {
     #region Classes, Enums and Structs
-    public enum BattleState { SelectMove, SelectTarget, ExecuteMoves, }
+    public enum BattleState { SelectMove, SelectTarget, ExecuteMoves, Finished }
 
     //The position of a player unit
     [Serializable] public class PlayerPositionsStruct
@@ -48,6 +50,7 @@ public class TurnSystem : MonoBehaviour
     {
         get
         {
+            if (m_machine.CurrentState == null) return BattleState.Finished;
             return (BattleState)Enum.Parse(typeof(BattleState), m_machine.CurrentStateName);
         }
     } //What is state is the turn system currently in
@@ -68,7 +71,13 @@ public class TurnSystem : MonoBehaviour
     }
 
     //Unit and Move Selection information
-    int m_playerSelectIndex = 0; //The index of the player unit who the player is currently selecting a move for
+    [Header("Unit and Move Selection information")]
+    [ReadOnly, SerializeField] int m_playerSelectIndex = 0; //The index of the player unit who the player is currently selecting a move for
+
+    //Win Lost Events
+    [Header("Win Lost Events")]
+    public UnityEvent OnWin;
+    public UnityEvent OnLost;
 
     //Other Variables
     PlayableDirector m_director;
@@ -132,6 +141,9 @@ public class TurnSystem : MonoBehaviour
             unit.transform.position = m_playerPositions[m_players.Count + neutralPlayers.Count - 2].m_positions[i];
         }
 
+        //Set up UI
+        m_commandUI.m_backButton.onClick.AddListener(CommandBackButtonClick);
+
         //Set up state machine
         m_machine.m_states = new Dictionary<string, StateMachine.State>
         {
@@ -179,8 +191,7 @@ public class TurnSystem : MonoBehaviour
         //Enables/Disables UI
         m_battleUI.gameObject.SetActive(true);
         m_commandUI.m_pannel.gameObject.SetActive(true);
-        m_commandUI.m_backButton.gameObject.SetActive(m_playerSelectIndex > 0);
-
+        
         //Skip Player Units that have no health
         bool isFirstUnit = m_playerSelectIndex <= 0;
         for (; m_playerSelectIndex < m_players.Count; m_playerSelectIndex++)
@@ -192,6 +203,9 @@ public class TurnSystem : MonoBehaviour
             if (m_playerSelectIndex + 1 >= m_players.Count) { Lost(); return; }
         }
 
+        //Enables back button
+        m_commandUI.m_backButton.gameObject.SetActive(!isFirstUnit);
+
         //Update fight UI
         foreach (Transform child in m_fightUI.m_moveLayoutGroup.transform) Destroy(child.gameObject);
         for (int i = 0; i < m_players[m_playerSelectIndex].m_unitMoves.Count; i++)
@@ -201,7 +215,7 @@ public class TurnSystem : MonoBehaviour
 
             int moveIndex = i;
             moveButton.onClick.AddListener(delegate { SelectMove(m_players[m_playerSelectIndex].m_unitMoves[moveIndex]); });
-            moveButton.GetComponentInChildren<Text>().text = move.name;
+            moveButton.GetComponentInChildren<TMP_Text>().text = move.name;
         }
     }
 
@@ -229,8 +243,10 @@ public class TurnSystem : MonoBehaviour
     {
         //Go to Select Move from a previous player unit while ignoring players that have no health
         for (m_playerSelectIndex--; m_playerSelectIndex > 0; m_playerSelectIndex--)
-            if (m_players[m_playerSelectIndex].Health > 0.0f)
-                { m_machine.CurrentState = m_machine.m_states[BattleState.SelectMove.ToString()]; return; }
+            if (m_players[m_playerSelectIndex].Health <= 0.0f) continue;
+
+        //Set to select moves state for previous unit
+        m_machine.CurrentState = m_machine.m_states[BattleState.SelectMove.ToString()];
     }
     #endregion
 
@@ -332,6 +348,18 @@ public class TurnSystem : MonoBehaviour
                 
                 //Ensure the animation has finished
                 m_director.Stop();
+
+                //Check whether all players are defeated
+                for (int playerIndex = 0; playerIndex < m_players.Count; playerIndex++)
+                {
+                    if (m_players[playerIndex].Health > 0.0f) break;
+
+                    //Lose the game if all players have no health
+                    if (playerIndex + 1 >= m_players.Count) { Lost(); break; }
+                }
+
+                //Check whether all enemies are defeated
+                if (m_enemies.Count <= 0) { Won(); break; }
             }
 
             //Transition to select target state
@@ -345,13 +373,13 @@ public class TurnSystem : MonoBehaviour
     public void Won()
     {
         m_machine.End();
-        Debug.Log("Won");
+        OnWin.Invoke();
     }
 
     public void Lost()
     {
         m_machine.End();
-        Debug.Log("Lost");
+        OnLost.Invoke();
     }
     #endregion
 
