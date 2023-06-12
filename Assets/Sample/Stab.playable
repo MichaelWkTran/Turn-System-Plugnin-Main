@@ -477,9 +477,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_template:
     m_health: -10
-    m_attack: 0
-    m_defence: 0
     m_speed: 0
-    m_evasion: 0
-    m_accuracy: 0
     m_moveProperties: []
