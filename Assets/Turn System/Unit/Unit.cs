@@ -3,6 +3,7 @@ using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(Animator))]
 public class Unit : MonoBehaviour
 {
     public enum UnitType
@@ -15,11 +16,11 @@ public class Unit : MonoBehaviour
 
     public string m_unitName; //The name of the unit
     public UnitType m_unitType; //What side is the unit on
-    public UnityEvent OnUpdate; //How would the unit repond when their stats are modified
+    public UnityEvent m_onUpdate; //How would the unit repond when their stats are modified
 
     //Unit stats
-    [SerializeField] float m_maxHealth;   [ReadOnly, SerializeField] float m_health;
-    [SerializeField] float m_minSpeed;    [SerializeField]           float m_maxSpeed;    [ReadOnly, SerializeField] float m_speed;
+    [SerializeField] float m_maxHealth = 100.0f;   [ReadOnly, SerializeField] float m_health;
+    [SerializeField] float m_minSpeed;             [SerializeField]           float m_maxSpeed;    [SerializeField] float m_speed;
     
     //Moves List
     public List<Move> m_unitMoves;

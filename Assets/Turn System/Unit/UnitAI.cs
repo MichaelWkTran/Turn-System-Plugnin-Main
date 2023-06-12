@@ -5,10 +5,19 @@ public class UnitAI : MonoBehaviour
 {
     Unit m_unit;
 
-    void Start()
+    void Awake()
     {
         m_unit = GetComponent<Unit>();
-        m_unit.OnUpdate.AddListener(() => OnUnitUpdate(m_unit));
+    }
+
+    void OnEnable()
+    {
+        m_unit.m_onUpdate.AddListener(OnUnitUpdate);
+    }
+
+    void OnDisable()
+    {
+        m_unit.m_onUpdate.RemoveListener(OnUnitUpdate);
     }
 
     public virtual void SelectMovesTargetAI()
@@ -23,12 +32,12 @@ public class UnitAI : MonoBehaviour
         m_unit.SetMoveSelected(Random.Range(0, m_unit.m_unitMoves.Count));
     }
 
-    public virtual void OnUnitUpdate(Unit _unit)
+    protected virtual void OnUnitUpdate()
     {
         //Kill unit when they have no health
-        if (_unit.Health <= 0)
+        if (m_unit.Health <= 0)
         {
-            Destroy(_unit.gameObject);
+            Destroy(m_unit.gameObject);
         }
     }
 }

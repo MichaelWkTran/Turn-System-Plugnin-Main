@@ -2119,21 +2119,7 @@ MonoBehaviour:
   m_players: []
   m_enemies: []
   m_neutral: []
-  m_playerPositions:
-  - m_positions:
-    - {x: -6.66, y: -2.5, z: 0}
-  - m_positions:
-    - {x: -7.0277643, y: -2.4179258, z: 0}
-    - {x: -2.5417473, y: -2.187647, z: 0}
-  - m_positions:
-    - {x: 0.42488194, y: 0, z: 0}
-    - {x: 0, y: 0, z: 0}
-    - {x: -2.0688705, y: 0, z: 0}
-  - m_positions:
-    - {x: -0.6671636, y: 0, z: 0}
-    - {x: 1.299488, y: 0, z: 0}
-    - {x: 4.033963, y: 0, z: 0}
-    - {x: 5.02798, y: 0, z: 0}
+  m_playerPositions: []
   m_playerSelectIndex: 0
   OnWin:
     m_PersistentCalls:

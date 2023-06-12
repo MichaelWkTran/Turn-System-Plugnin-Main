@@ -15,6 +15,16 @@ public class UnitUI : MonoBehaviour
         m_unitName.text = m_unit.m_unitName;
         UpdateUI();
     }
+    
+    void OnEnable()
+    {
+        m_unit.m_onUpdate.AddListener(UpdateUI);
+    }
+
+    void OnDisable()
+    {
+        m_unit.m_onUpdate.RemoveListener(UpdateUI);
+    }
 
     public void UpdateUI()
     {

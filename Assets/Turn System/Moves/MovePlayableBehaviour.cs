@@ -22,6 +22,6 @@ public class MovePlayableBehaviour : PlayableBehaviour
         foreach (string moveProperty in m_moveProperties)
             typeof(MoveProperties).GetMethod(moveProperty).
                 Invoke(null, new object[] { info.output.GetUserData() });        
-        unit.OnUpdate.Invoke();
+        unit.m_onUpdate.Invoke();
     }
 }

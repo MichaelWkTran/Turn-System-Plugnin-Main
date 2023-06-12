@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitBehaviours : MonoBehaviour
+public class UnitFlashEffect : MonoBehaviour
 {
     SpriteRenderer m_spriteRenderer;
     Material m_defaultMaterial;

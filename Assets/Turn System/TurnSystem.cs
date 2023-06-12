@@ -76,8 +76,8 @@ public class TurnSystem : MonoBehaviour
 
     //Win Lost Events
     [Header("Win Lost Events")]
-    public UnityEvent OnWin;
-    public UnityEvent OnLost;
+    public UnityEvent m_onWin;
+    public UnityEvent m_onLost;
 
     //Other Variables
     PlayableDirector m_director;
@@ -239,7 +239,7 @@ public class TurnSystem : MonoBehaviour
         m_machine.CurrentState = m_machine.m_states[BattleState.SelectTarget.ToString()];
     }
 
-    public void CommandBackButtonClick()
+    void CommandBackButtonClick()
     {
         //Go to Select Move from a previous player unit while ignoring players that have no health
         for (m_playerSelectIndex--; m_playerSelectIndex > 0; m_playerSelectIndex--)
@@ -373,13 +373,13 @@ public class TurnSystem : MonoBehaviour
     public void Won()
     {
         m_machine.End();
-        OnWin.Invoke();
+        m_onWin.Invoke();
     }
 
     public void Lost()
     {
         m_machine.End();
-        OnLost.Invoke();
+        m_onLost.Invoke();
     }
     #endregion
 
