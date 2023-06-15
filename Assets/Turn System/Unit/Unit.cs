@@ -41,7 +41,6 @@ public class Unit : MonoBehaviour
     void Awake()
     {
         m_health   = m_maxHealth;
-        m_speed    = m_maxSpeed;
     }
 
     void Start()
@@ -65,10 +64,18 @@ public class Unit : MonoBehaviour
         }
     }
 
-    void SetMaxFloatStat(float _value, ref float _currentVariable, ref float _maxVariable)
+    void SetMaxFloatStat(float _value, ref float _currentVariable, ref float _maxVariable, float _minVariable = 0.0f)
     {
+        if (_value <= _minVariable) { Debug.LogWarning("The max variable can not be equal or smaller than the min variable"); return; }
         _maxVariable = _value;
-        _currentVariable = Mathf.Clamp(_currentVariable, 0.0f, _maxVariable);
+        _currentVariable = Mathf.Clamp(_currentVariable, _minVariable, _maxVariable);
+    }
+
+    void SetMinFloatStat(float _value, ref float _currentVariable, ref float _minVariable, float _maxVariable = Mathf.Infinity)
+    {
+        if (_maxVariable <= _value) { Debug.LogWarning("The min variable can not be equal or larger than the max variable"); return; }
+        _maxVariable = _value;
+        _currentVariable = Mathf.Clamp(_currentVariable, _minVariable, _maxVariable);
     }
 
     void SetFloatStat(float _value, ref float _currentVariable, float _maxVariable, float _minVariable = 0.0f)

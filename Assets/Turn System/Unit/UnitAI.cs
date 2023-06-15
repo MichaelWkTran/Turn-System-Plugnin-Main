@@ -3,19 +3,19 @@
 [RequireComponent(typeof(Unit))]
 public class UnitAI : MonoBehaviour
 {
-    Unit m_unit;
+    protected Unit m_unit;
 
-    void Awake()
+    protected virtual void Awake()
     {
         m_unit = GetComponent<Unit>();
     }
 
-    void OnEnable()
+    protected virtual void OnEnable()
     {
         m_unit.m_onUpdate.AddListener(OnUnitUpdate);
     }
 
-    void OnDisable()
+    protected virtual void OnDisable()
     {
         m_unit.m_onUpdate.RemoveListener(OnUnitUpdate);
     }

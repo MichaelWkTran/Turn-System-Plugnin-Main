@@ -40,6 +40,7 @@ public class TurnSystem : MonoBehaviour
     [Serializable] protected struct SelectTargetUI
     {
         public RectTransform m_pannel;
+        public Button m_backButton;
     }
 
     #endregion
@@ -143,6 +144,7 @@ public class TurnSystem : MonoBehaviour
 
         //Set up UI
         m_commandUI.m_backButton.onClick.AddListener(CommandBackButtonClick);
+        m_selectTargetUI.m_backButton.onClick.AddListener(SelectTargetBackButtonClick);
 
         //Set up state machine
         m_machine.m_states = new Dictionary<string, StateMachine.State>
@@ -166,6 +168,7 @@ public class TurnSystem : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         //Draw Unit Gizmos for player positions
+        if (m_playerPositionsDebugIndex >= 0)
         {
             PlayerPositionsStruct playerPositionsClass = m_playerPositions[m_playerPositionsDebugIndex];
             for (int posIndex = 0; posIndex < playerPositionsClass.m_positions.Length; posIndex++)
@@ -279,7 +282,7 @@ public class TurnSystem : MonoBehaviour
         else m_machine.CurrentState = m_machine.m_states[BattleState.SelectMove.ToString()];
     }
 
-    public void SelectTargetBackButtonClick()
+    void SelectTargetBackButtonClick()
     {
         //Dont execute if not in the appropriate state
         if (m_machine.CurrentStateName != BattleState.SelectTarget.ToString()) return;
@@ -425,7 +428,7 @@ public class TurnSystemEditor : Editor
         turnSystem.CheckPlayerPositionsValidity();
 
         //Set player positions debug index
-        turnSystem.m_playerPositionsDebugIndex = Mathf.Clamp(turnSystem.m_playerPositionsDebugIndex, 0, turnSystem.PlayerPositions.Length-1);
+        turnSystem.m_playerPositionsDebugIndex = Mathf.Clamp(turnSystem.m_playerPositionsDebugIndex, -1, turnSystem.PlayerPositions.Length-1);
 
         //Select a target unit
         if (GUILayout.Button("Set Target Unit"))
@@ -442,10 +445,12 @@ public class TurnSystemEditor : Editor
         if (Selection.Contains(turnSystem)) return;
 
         //Set player position via handles
+        if (turnSystem.m_playerPositionsDebugIndex >= 0)
         {
             TurnSystem.PlayerPositionsStruct[] playerPositions = turnSystem.PlayerPositions;
 
             EditorGUI.BeginChangeCheck();
+            
             TurnSystem.PlayerPositionsStruct playerPositionsClass = playerPositions[turnSystem.m_playerPositionsDebugIndex];
             for (int posIndex = 0; posIndex < playerPositionsClass.m_positions.Length; posIndex++)
             {

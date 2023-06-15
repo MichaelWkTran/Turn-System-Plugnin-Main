@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Untitled Item", menuName = "Inventory and Items/Create New Item")]
+[CreateAssetMenu(fileName = "Untitled Item", menuName = "Turn System/Create New Item")]
 public class Item : Move
 {
     [SerializeField] Sprite m_icon; //The icon representing the item

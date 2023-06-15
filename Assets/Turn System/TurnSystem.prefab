@@ -911,19 +911,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 59401563105110430}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2062684968861327019}
-        m_TargetAssemblyTypeName: TurnSystem, Assembly-CSharp
-        m_MethodName: SelectTargetBackButtonClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &2062684967101693443
 GameObject:
   m_ObjectHideFlags: 0
@@ -2121,10 +2109,10 @@ MonoBehaviour:
   m_neutral: []
   m_playerPositions: []
   m_playerSelectIndex: 0
-  OnWin:
+  m_onWin:
     m_PersistentCalls:
       m_Calls: []
-  OnLost:
+  m_onLost:
     m_PersistentCalls:
       m_Calls: []
   m_battleUI: {fileID: 2062684968109192963}
@@ -2139,7 +2127,8 @@ MonoBehaviour:
     m_pannel: {fileID: 5945432049408142548}
   m_selectTargetUI:
     m_pannel: {fileID: 5423661884168195490}
-  m_playerPositionsDebugIndex: 0
+    m_backButton: {fileID: 8176128662305169465}
+  m_playerPositionsDebugIndex: -1
   m_selectedTarget: {fileID: 0}
 --- !u!320 &6081585512035197827
 PlayableDirector:

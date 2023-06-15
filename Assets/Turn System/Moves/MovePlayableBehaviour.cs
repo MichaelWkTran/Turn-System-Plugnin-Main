@@ -19,9 +19,13 @@ public class MovePlayableBehaviour : PlayableBehaviour
         //Apply Stat Modifier
         unit.Health += m_health;
         unit.Speed += m_speed;
-        foreach (string moveProperty in m_moveProperties)
-            typeof(MoveProperties).GetMethod(moveProperty).
-                Invoke(null, new object[] { info.output.GetUserData() });        
+        #region Invoke Move Properties
+            foreach (string moveProperty in m_moveProperties)
+                typeof(MoveProperties).GetMethod(moveProperty).
+                    Invoke(null, new object[] { info.output.GetUserData() });
+        #endregion
+
+        //Update Unit
         unit.m_onUpdate.Invoke();
     }
 }
